@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ditlep"
-version = "2.0.0"
+version = "2.0.1"
 description = "Well, this package is a Ditlep API wrapper with a data decryption layer."
 authors = ["Marcuth <example@gmail.com>"]
 readme = "README.md"

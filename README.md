@@ -6,7 +6,15 @@ I then intend to add a translation layer using my other library, [`dragon-city-u
 
 ---
 
-## Using
+## Installation
+
+To install you will use `pip` or another package manager for Python. Here is the example with `pip`:
+
+```
+pip install ditlep
+```
+
+## Usage
 
 To use this library is very simple, you just need to create an instance of the Ditlep object and pass some parameters:
 
