@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "ditlep"
-version = "0.1.0"
-description = ""
+version = "2.0.0"
+description = "Well, this package is a Ditlep API wrapper with a data decryption layer."
 authors = ["Marcuth <example@gmail.com>"]
 readme = "README.md"
 
@@ -15,6 +15,7 @@ httpx = "^0.26.0"
 
 [tool.poetry.group.dev.dependencies]
 python-decouple = "^3.8"
+twine = "^5.0.0"
 
 [build-system]
 requires = ["poetry-core"]
