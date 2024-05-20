@@ -1,6 +1,6 @@
 # Ditlep
 
-Well, this package is a Ditlep API wrapper with a data decryption layer.
+Well, this package is a wrapper for the Ditlep API, a Dragon City information website.
 
 I then intend to add a translation layer using my other library, [`dragon-city-utils`](https://github.com/1Marcuth/py.dragon-city-utils) to obtain translated data regardless of the language, different from what we see on the Ditlep website, which is only in English, but well, that's for sure. when you feel like using this library again ;)
 
@@ -16,21 +16,13 @@ pip install ditlep
 
 ## Usage
 
-To use this library is very simple, you just need to create an instance of the Ditlep object and pass some parameters:
+To use this library is very simple, just create an instance of the Ditlep object:
 
 ```python
 from ditlep import Ditlep
 
-ditlep = Ditlep(
-    iv = "...",
-    password = "...",
-    salt = "...",
-    dk_len = ...,
-    count = ...
-)
+ditlep = Ditlep()
 ```
-
-> If you don't know the decryption parameters you can try to contact me so I can give you them
 
 ---
 

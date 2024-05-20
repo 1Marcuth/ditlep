@@ -10,60 +10,26 @@ import json
 
 class Ditlep:
     VALIDATE_CONFIG = dict(arbitrary_types_allowed = True)
-
-    @validate_call(config = VALIDATE_CONFIG)
-    def __init__(
-        self,
-        iv: str,
-        password: str,
-        salt: str,
-        dk_len: int,
-        count: int
-    ) -> None:
-        self.decrypt_config: dict[str, str] = {
-            "iv": iv,
-            "password": password,
-            "salt": salt,
-            "dk_len": dk_len,
-            "count": count
-        }
-
+    
+    def __init__(self) -> None:
         self.base_url = "https://www.ditlep.com"
 
     @validate_call(config = VALIDATE_CONFIG)
-    def _decrypt_data(self, encrypted_data: Any) -> Any:
-        iv = bytes.fromhex(self.decrypt_config["iv"])
-        password = self.decrypt_config["password"].encode()
-        salt = self.decrypt_config["salt"].encode()
-
-        key = PBKDF2(
-            password,
-            salt,
-            dkLen = self.decrypt_config["dk_len"],
-            count = self.decrypt_config["count"]
+    def fetch_api(
+        self,
+        path: str,
+        params: dict = {},
+        method: str = "GET"
+    ) -> Any:
+        response = httpx.request(
+            method = method,
+            url = f"{self.base_url}{path}",
+            params = params
         )
+        
+        data = response.json()
 
-        cipher = AES.new(
-            key,
-            AES.MODE_CBC,
-            iv
-        )
-
-        decrypted_data = unpad(
-            cipher.decrypt(
-                base64.b64decode(encrypted_data)
-            ),
-            AES.block_size
-        )
-
-        return json.loads(decrypted_data.decode())
-
-    @validate_call(config = VALIDATE_CONFIG)
-    def _fetch_api(self, path: str, params: dict = {}) -> Any:
-        response = httpx.get(f"{self.base_url}{path}", params = params)
-        encrypted_data = response.text
-        decrypted_data = self._decrypt_data(encrypted_data)
-        return decrypted_data
+        return data
 
     @validate_call(config = VALIDATE_CONFIG)
     def get_alliance_chests(self, month: Optional[int] = None) -> dict:
@@ -73,7 +39,7 @@ class Ditlep:
 
         params = { "month": month }
 
-        data = self._fetch_api("/AllianceChest/Get", params)
+        data = self.fetch_api("/AllianceChest/Get", params)
 
         return data
 
@@ -85,7 +51,7 @@ class Ditlep:
 
         params = { "month": month }
 
-        data = self._fetch_api("/DragonTv/Get", params)
+        data = self.fetch_api("/DragonTv/Get", params)
 
         return data
 
@@ -114,7 +80,7 @@ class Ditlep:
             "tag": tag
         }
 
-        data = self._fetch_api("/Dragon/Search", params)
+        data = self.fetch_api("/Dragon/Search", params)
 
         return data
 
@@ -135,7 +101,7 @@ class Ditlep:
             "filter": f"TypeId~eq~'{id_or_name}'~or~Name~contains~'{id_or_name}'~or~BuildingTime~contains~'{id_or_name}'~or~Price~contains~'{id_or_name}'~or~Sell~contains~'{id_or_name}'~or~InStore~contains~'{id_or_name}'"
         }
 
-        data = self._fetch_api("/Items/ItemFilter", params)
+        data = self.fetch_api("/Items/ItemFilter", params)
 
         return data
 
@@ -146,26 +112,28 @@ class Ditlep:
             "parent2Id": parent_ids[1]
         }
 
-        data = self._fetch_api("/Breeding/CalculateNewBreeding", params)
+        data = self.fetch_api("/Breeding/CalculateNewBreeding", params)
 
         return data
 
     def get_permanent_quests(self) -> dict:
-        data = self._fetch_api("/Tournament/GetPermanentQuests")
+        data = self.fetch_api("/Tournament/GetPermanentQuests")
         return data
     
     def get_temporary_quests(self) -> dict:
-        data = self._fetch_api("/Tournament/GetAll")
+        data = self.fetch_api("/Tournament/GetAll")
         return data
 
     @validate_call(config = VALIDATE_CONFIG)
     def get_fog_islands(self, id: Optional[int] = None) -> dict:
-        params = {}
+        params = {
+            "latest": True
+        }
 
         if not id is None:
             params["id"] = id
 
-        data = self._fetch_api("/FogIsland/Get", params)
+        data = self.fetch_api("/FogIsland/Get", params, "POST")
 
         return data
 
@@ -176,7 +144,7 @@ class Ditlep:
         if not id is None:
             params["id"] = id
 
-        data = self._fetch_api("/GridIsland/Get", params)
+        data = self.fetch_api("/GridIsland/Get", params)
 
         return data
 
@@ -187,7 +155,7 @@ class Ditlep:
         if not id is None:
             params["id"] = id
 
-        data = self._fetch_api("/HeroicRace/Get", params)
+        data = self.fetch_api("/HeroicRace/Get", params)
 
         return data
 
@@ -198,7 +166,7 @@ class Ditlep:
         if not id is None:
             params["id"] = id
 
-        data = self._fetch_api("/MazeIsland/Get", params)
+        data = self.fetch_api("/MazeIsland/Get", params)
 
         return data
 
@@ -209,7 +177,7 @@ class Ditlep:
         if not id is None:
             params["id"] = id
 
-        data = self._fetch_api("/PuzzleIsland/Get", params)
+        data = self.fetch_api("/PuzzleIsland/Get", params)
 
         return data
 
@@ -220,7 +188,7 @@ class Ditlep:
         if not id is None:
             params["id"] = id
 
-        data = self._fetch_api("/RunnerIsland/Get", params)
+        data = self.fetch_api("/RunnerIsland/Get", params)
 
         return data
 
@@ -231,6 +199,6 @@ class Ditlep:
         if not id is None:
             params["id"] = id
 
-        data = self._fetch_api("/TowerIsland/Get", params)
+        data = self.fetch_api("/TowerIsland/Get", params)
 
         return data
